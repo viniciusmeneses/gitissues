@@ -18,18 +18,18 @@ class Header extends Component {
 
   goBack = async () => {
     const { navigation } = this.props;
-    navigation.goBack();
+    navigation.navigate('Repositories');
   }
 
   render() {
     const { title } = this.props;
 
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, title !== 'GitIssues' && styles.withButton]}>
         <StatusBar barStyle="dark-content" />
         {title !== 'GitIssues' && (
         <TouchableOpacity onPress={this.goBack}>
-          <Icon name="exchange" size={16} style={styles.icon} />
+          <Icon name="chevron-left" size={16} style={styles.icon} />
         </TouchableOpacity>
         )}
         <Text style={styles.title}>{title}</Text>

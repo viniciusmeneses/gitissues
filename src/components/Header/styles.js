@@ -9,7 +9,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: colors.light,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: metrics.basePadding,
     backgroundColor: colors.white,
@@ -23,6 +23,10 @@ const styles = StyleSheet.create({
 
   icon: {
     color: colors.darker,
+  },
+
+  withButton: {
+    justifyContent: 'space-between',
   },
 });
 

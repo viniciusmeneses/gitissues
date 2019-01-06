@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, TextInput, TouchableOpacity, FlatList, AsyncStorage, ActivityIndicator,
+  View, TextInput, TouchableOpacity, FlatList, AsyncStorage, ActivityIndicator, StatusBar, Alert,
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -23,26 +23,34 @@ export default class Repositories extends Component {
 
   loadReposFromStorage = async () => {
     this.setState({ refreshing: true });
-    const repositories = JSON.parse(await AsyncStorage.getItem('@GitIssues:repositories'));
+    const repositories = JSON.parse(await AsyncStorage.getItem('@GitIssues:repositories') || '[]');
     this.setState({ repositories, refreshing: false });
   }
 
   fetchNewRepository = async () => {
     const { repositoryInput } = this.state;
-    this.setState({ loading: true });
+    if (repositoryInput) {
+      try {
+        this.setState({ loading: true });
 
-    const { data } = api.get(repositoryInput);
-    this.saveNewRepository(data);
+        const { data } = await api.get(`/repos/${repositoryInput}`);
+        this.saveNewRepository(data);
 
-    this.setState(({ repositories }) => ({
-      repositories: [...repositories, data],
-      loading: false,
-    }));
+        this.setState(({ repositories }) => ({
+          repositories: [...repositories, data],
+          loading: false,
+          repositoryInput: '',
+        }));
+      } catch (err) {
+        this.setState({ loading: false });
+        Alert.alert('Error', 'Repository not found!');
+      }
+    }
   }
 
   saveNewRepository = async (newRepository) => {
     const { repositories } = this.state;
-    await AsyncStorage.setItem('@GitIssues', JSON.stringify([...repositories, newRepository]));
+    await AsyncStorage.setItem('@GitIssues:repositories', JSON.stringify([...repositories, newRepository]));
   }
 
   handleRepositoryInput = text => this.setState({ repositoryInput: text });
@@ -52,23 +60,24 @@ export default class Repositories extends Component {
     return <FlatList data={repositories} keyExtractor={repo => String(repo.id)} renderItem={this.renderListItem} onRefresh={this.loadReposFromStorage} refreshing={refreshing} />;
   }
 
-  renderListItem = ({ repo }) => <RepositoryItem repository={repo} />;
+  renderListItem = ({ item }) => <RepositoryItem repository={item} />;
 
   render() {
     const { loading, repositoryInput } = this.state;
 
     return (
-      <View>
+      <View style={styles.container}>
+        <StatusBar barStyle="dark-content" />
         <Header title="GitIssues" />
-        <View>
-          <TextInput value={repositoryInput} autoCapitalize="none" autoCorrect={false} placeholder="user/repository" underlineColorAndroid="transparent" onChangeText={this.handleRepositoryInput} />
-          {loading ? <ActivityIndicator /> : (
+        <View style={styles.searchContainer}>
+          <TextInput style={styles.input} value={repositoryInput} autoCapitalize="none" autoCorrect={false} placeholder="user/repository" underlineColorAndroid="transparent" onChangeText={this.handleRepositoryInput} />
+          {loading ? <ActivityIndicator size={17} color="#333" style={styles.addIcon} /> : (
             <TouchableOpacity onPress={this.fetchNewRepository}>
-              <Icon name="add" size={16} />
+              <Icon name="plus" style={styles.addIcon} size={17} />
             </TouchableOpacity>
           )}
         </View>
-        <View>
+        <View style={styles.listContainer}>
           {this.renderList()}
         </View>
       </View>
