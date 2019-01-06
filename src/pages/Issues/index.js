@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, FlatList, ActivityIndicator, Text, TouchableOpacity,
+  View, FlatList, ActivityIndicator, Text, TouchableOpacity, StatusBar,
 } from 'react-native';
 import { withNavigation } from 'react-navigation';
 
@@ -46,6 +46,7 @@ class Issues extends Component {
     const { repository, loading, filter } = this.state;
     return (
       <View style={styles.container}>
+        <StatusBar barStyle="dark-content" backgroundColor="#fff" />
         <Header title={repository} />
         <View style={styles.issuesContainer}>
           <View style={styles.filterContainer}>

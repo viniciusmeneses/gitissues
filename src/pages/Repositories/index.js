@@ -67,7 +67,7 @@ export default class Repositories extends Component {
 
     return (
       <View style={styles.container}>
-        <StatusBar barStyle="dark-content" />
+        <StatusBar barStyle="dark-content" backgroundColor="#fff" />
         <Header title="GitIssues" />
         <View style={styles.searchContainer}>
           <TextInput style={styles.input} value={repositoryInput} autoCapitalize="none" autoCorrect={false} placeholder="user/repository" underlineColorAndroid="transparent" onChangeText={this.handleRepositoryInput} />
