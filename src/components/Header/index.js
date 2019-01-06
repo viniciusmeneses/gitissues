@@ -27,7 +27,7 @@ class Header extends Component {
     return (
       <View style={styles.container}>
         <StatusBar barStyle="dark-content" />
-        {title !== 'Repositories' && (
+        {title !== 'GitIssues' && (
         <TouchableOpacity onPress={this.goBack}>
           <Icon name="exchange" size={16} style={styles.icon} />
         </TouchableOpacity>
